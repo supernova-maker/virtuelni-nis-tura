@@ -1,4 +1,6 @@
-import { type Business, type InsertBusiness, type Panorama, type InsertPanorama } from "@shared/schema";
+import { businesses, panoramas, type Business, type InsertBusiness, type Panorama, type InsertPanorama } from "@shared/schema";
+import { db } from "./db";
+import { eq, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -192,4 +194,55 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// DatabaseStorage implementacija
+export class DatabaseStorage implements IStorage {
+  async getBusinesses(): Promise<Business[]> {
+    return db.select().from(businesses);
+  }
+
+  async getBusinessesByCategory(category: string): Promise<Business[]> {
+    if (category === "Svi biznisi") {
+      return this.getBusinesses();
+    }
+    return db.select().from(businesses).where(eq(businesses.category, category));
+  }
+
+  async getBusiness(id: string): Promise<Business | undefined> {
+    const [business] = await db.select().from(businesses).where(eq(businesses.id, id));
+    return business || undefined;
+  }
+
+  async createBusiness(insertBusiness: InsertBusiness): Promise<Business> {
+    const [business] = await db
+      .insert(businesses)
+      .values(insertBusiness)
+      .returning();
+    return business;
+  }
+
+  async searchBusinesses(query: string): Promise<Business[]> {
+    // PostgreSQL full-text search
+    return db.select().from(businesses).where(
+      sql`${businesses.name} ILIKE ${`%${query}%`} OR ${businesses.description} ILIKE ${`%${query}%`} OR ${businesses.category} ILIKE ${`%${query}%`}`
+    );
+  }
+
+  async getPanoramas(): Promise<Panorama[]> {
+    return db.select().from(panoramas);
+  }
+
+  async getPanorama(id: string): Promise<Panorama | undefined> {
+    const [panorama] = await db.select().from(panoramas).where(eq(panoramas.id, id));
+    return panorama || undefined;
+  }
+
+  async createPanorama(insertPanorama: InsertPanorama): Promise<Panorama> {
+    const [panorama] = await db
+      .insert(panoramas)
+      .values(insertPanorama)
+      .returning();
+    return panorama;
+  }
+}
+
+export const storage = new DatabaseStorage();

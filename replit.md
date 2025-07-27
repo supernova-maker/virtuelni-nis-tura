@@ -41,7 +41,15 @@ Two main entities managed through Drizzle ORM:
 - **Panoramas**: Standalone 360° panoramic views with hotspot support
 
 ### Data Storage Strategy
-Currently uses in-memory storage (`MemStorage`) with a well-defined interface (`IStorage`) that allows easy migration to PostgreSQL without code changes. The database is configured for PostgreSQL through Drizzle with proper schema definitions.
+**Migrated to PostgreSQL Database**: The application now uses PostgreSQL with Drizzle ORM for persistent data storage. Key features include:
+
+- **PostgreSQL Database**: Production-ready with geographic data support
+- **Drizzle ORM**: Type-safe database queries with automatic migration
+- **Enhanced Schema**: Extended business and panorama models with additional fields:
+  - Business: website URLs, social media links, online ordering, contact emails
+  - Panoramas: view counts, public visibility, tagging system
+- **Automatic Seeding**: Sample data from Niš businesses automatically loaded on startup
+- **Advanced Search**: PostgreSQL full-text search capabilities for business discovery
 
 ## Data Flow
 

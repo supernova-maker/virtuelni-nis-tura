@@ -16,6 +16,13 @@ export const businesses = pgTable("businesses", {
   panoramaUrl: text("panorama_url"),
   latitude: real("latitude").notNull(),
   longitude: real("longitude").notNull(),
+  websiteUrl: text("website_url"),
+  emailAddress: text("email_address"),
+  socialMedia: text("social_media"), // JSON string za Instagram, Facebook linkove
+  menuUrl: text("menu_url"), // Link ka meniju ili PDF
+  onlineOrderingUrl: text("online_ordering_url"), // Link za online naručivanje
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const panoramas = pgTable("panoramas", {
@@ -26,14 +33,23 @@ export const panoramas = pgTable("panoramas", {
   latitude: real("latitude").notNull(),
   longitude: real("longitude").notNull(),
   hotspots: text("hotspots").array(),
+  viewCount: integer("view_count").default(0),
+  isPublic: text("is_public").default("true"), // boolean kao string
+  tags: text("tags").array(), // tagovi za lakše pretraživanje
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const insertBusinessSchema = createInsertSchema(businesses).omit({
   id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertPanoramaSchema = createInsertSchema(panoramas).omit({
   id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export type InsertBusiness = z.infer<typeof insertBusinessSchema>;
