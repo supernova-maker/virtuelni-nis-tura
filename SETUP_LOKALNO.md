@@ -47,20 +47,30 @@ npm run db:push
 
 ## Korak 5: Pokretanje aplikacije
 
-### Na Windows:
+### Za development (preporučeno):
 ```bash
-dev.bat
+dev.bat          # Windows
+npm run dev      # Mac/Linux
 ```
 
-### Na Mac/Linux:
+### Za production:
 ```bash
-npm run dev
+npm run build    # Prvo napravite build
+start.bat        # Windows production
+npm start        # Mac/Linux production
 ```
 
 Aplikacija će biti dostupna na: http://localhost:5000
 
 ### Brži setup za Windows korisnike:
 Pokrenite `setup.bat` - automatski će instalirati pakete i kreirati .env fajl!
+
+## Česti problemi i rešenja
+
+### "DATABASE_URL must be set" greška:
+1. Proverite da .env fajl postoji u root direktorijumu
+2. Proverite da DATABASE_URL nije prazan u .env fajlu
+3. Za development koristite `dev.bat` umesto `npm start`
 
 ## Struktura projekta
 
