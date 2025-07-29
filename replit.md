@@ -7,6 +7,7 @@ This is a full-stack web application that showcases businesses in Niš, Serbia t
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Local development support: Windows VS Code environment with batch files for easy setup.
 
 ## System Architecture
 
@@ -104,5 +105,13 @@ Two main entities managed through Drizzle ORM:
 - **Development**: `npm run dev` - runs TypeScript directly with tsx
 - **Production**: `npm run build` && `npm start` - builds and runs compiled JavaScript
 - **Database**: `npm run db:push` - applies schema changes to PostgreSQL
+- **Windows Local**: `dev.bat`, `build.bat`, `setup.bat` - Windows batch files for easy local development
 
-The architecture supports easy scaling from development to production while maintaining type safety and developer experience throughout the stack.
+### Local Development Setup
+For users running the project locally on Windows VS Code:
+- **setup.bat**: Automated setup script that installs dependencies and creates .env file
+- **dev.bat**: Quick development server startup for Windows
+- **SETUP_LOKALNO.md**: Complete Serbian language setup guide
+- Requires PostgreSQL database (local installation or cloud service like Neon.tech)
+
+The architecture supports easy scaling from development to production while maintaining type safety and developer experience throughout the stack. Local development is fully supported with Windows-specific batch files for streamlined setup.
