@@ -1,6 +1,18 @@
 import { businesses, panoramas, type Business, type Panorama, type InsertBusiness, type InsertPanorama } from '@shared/schema';
-import { db } from './db';
 import { eq } from 'drizzle-orm';
+
+// Lazy load database client based on environment
+let db: any;
+
+async function getDb() {
+  if (!db) {
+    const dbModule = process.env.NODE_ENV === 'development' 
+      ? await import('./db-local.js')
+      : await import('./db.js');
+    db = dbModule.db;
+  }
+  return db;
+}
 
 export interface IStorage {
   init(): Promise<void>;
@@ -15,7 +27,8 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async init(): Promise<void> {
     // Seed sample data if tables are empty
-    const existingBusinesses = await db.select().from(businesses).limit(1);
+    const database = await getDb();
+    const existingBusinesses = await database.select().from(businesses).limit(1);
     
     if (existingBusinesses.length === 0) {
       await this.seedData();
@@ -23,16 +36,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllBusinesses(): Promise<Business[]> {
-    return await db.select().from(businesses).orderBy(businesses.createdAt);
+    const database = await getDb();
+    return await database.select().from(businesses).orderBy(businesses.createdAt);
   }
 
   async getBusinessById(id: string): Promise<Business | undefined> {
-    const [business] = await db.select().from(businesses).where(eq(businesses.id, id));
+    const database = await getDb();
+    const [business] = await database.select().from(businesses).where(eq(businesses.id, id));
     return business || undefined;
   }
 
   async createBusiness(insertBusiness: InsertBusiness): Promise<Business> {
-    const [business] = await db
+    const database = await getDb();
+    const [business] = await database
       .insert(businesses)
       .values(insertBusiness)
       .returning();
@@ -40,16 +56,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllPanoramas(): Promise<Panorama[]> {
-    return await db.select().from(panoramas).orderBy(panoramas.createdAt);
+    const database = await getDb();
+    return await database.select().from(panoramas).orderBy(panoramas.createdAt);
   }
 
   async getPanoramaById(id: string): Promise<Panorama | undefined> {
-    const [panorama] = await db.select().from(panoramas).where(eq(panoramas.id, id));
+    const database = await getDb();
+    const [panorama] = await database.select().from(panoramas).where(eq(panoramas.id, id));
     return panorama || undefined;
   }
 
   async createPanorama(insertPanorama: InsertPanorama): Promise<Panorama> {
-    const [panorama] = await db
+    const database = await getDb();
+    const [panorama] = await database
       .insert(panoramas)
       .values(insertPanorama)
       .returning();
@@ -225,8 +244,9 @@ export class DatabaseStorage implements IStorage {
     ];
 
     // Insert sample businesses
+    const database = await getDb();
     for (const business of sampleBusinesses) {
-      await db.insert(businesses).values(business);
+      await database.insert(businesses).values(business);
     }
 
     // Sample panoramas
@@ -252,9 +272,9 @@ export class DatabaseStorage implements IStorage {
       }
     ];
 
-    // Insert sample panoramas
+    // Insert sample panoramas  
     for (const panorama of samplePanoramas) {
-      await db.insert(panoramas).values(panorama);
+      await database.insert(panoramas).values(panorama);
     }
   }
 }

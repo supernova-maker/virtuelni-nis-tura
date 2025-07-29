@@ -87,11 +87,20 @@ Pokrenite `setup.bat` - automatski će instalirati pakete i kreirati .env fajl!
 ### Problem: "Cannot find module"
 **Rešenje:** Pokrenite `npm install` ponovo
 
-### Problem: Database connection error
-**Rešenje:** Proverite DATABASE_URL u .env fajlu
+### Problem: Database connection error ili WebSocket greške
+**Rešenje:** 
+1. Proverite DATABASE_URL u .env fajlu
+2. Za lokalne PostgreSQL baze koristite format: `postgresql://username:password@localhost:5432/database_name`
+3. Za Neon.tech koristite puni connection string iz dashboard-a
 
 ### Problem: Port already in use
 **Rešenje:** Promenite port u server/index.ts ili zaustavite drugi proces
+
+### Problem: WebSocket ECONNREFUSED greške
+**Rešenje:** 
+1. Proverite da li imate ispravku DATABASE_URL format za lokalnu bazu
+2. Ako koristite Neon.tech, probajte sa drugim connection string-om
+3. Za lokalne baze, napravite bazu prvo: `createdb virtuelni_nis`
 
 ## Dodatne komande
 
