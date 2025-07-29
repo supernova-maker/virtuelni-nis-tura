@@ -108,6 +108,14 @@ Pokrenite `setup.bat` - automatski će instalirati pakete i kreirati .env fajl!
 - `npm start` - Pokreće production verziju
 - `npm run db:push` - Ažurira bazu podataka
 
+## Git Sinhronizacija (preporučeno)
+
+Umesto download/upload procesa, koristite Git za brže ažuriranje:
+
+- `pull.bat` - Preuzima najnovije izmene sa Replit-a
+- `sync.bat` - Šalje vaše izmene nazad
+- Pročitajte `GIT_SYNC.md` za detaljne instrukcije
+
 ## Testiranje
 
 Otvorite http://localhost:5000 u browseru i trebalo bi da vidite:
