@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, MapPin, Phone, Globe, Star, Filter } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import PanoramaViewer from '../components/PanoramaViewer';
 import type { Business } from '@shared/schema';
+import MapComponent from '../components/MapComponent'; // Import MapComponent
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,10 +18,6 @@ export default function Home() {
 
   const { data: businesses = [], isLoading } = useQuery<Business[]>({
     queryKey: ['/api/businesses'],
-  });
-
-  const { data: panoramas = [] } = useQuery({
-    queryKey: ['/api/panoramas'],
   });
 
   const filteredBusinesses = businesses.filter(business => {
@@ -34,14 +31,21 @@ export default function Home() {
 
   const handleBusinessClick = (business: Business) => {
     setSelectedBusiness(business);
-    if (business.panoramaUrl) {
-      setShowPanorama(true);
-    }
+     if (business.panoramaUrl) {
+       setShowPanorama(true);
+     }
   };
 
   const closePanorama = () => {
     setShowPanorama(false);
     setSelectedBusiness(null);
+  };
+
+  const handlePanoramaClickFromMap = (businessId: string) => {
+    const business = businesses.find(b => b.id === businessId);
+    if (business) {
+      handleBusinessClick(business);
+    }
   };
 
   if (isLoading) {
@@ -89,6 +93,15 @@ export default function Home() {
           </Select>
         </div>
       </header>
+
+      <MapComponent
+        panoramas={businesses.map(business => ({
+          id: business.id,
+          latitude: business.latitude,
+          longitude: business.longitude,
+        }))}
+        onPanoramaClick={handlePanoramaClickFromMap}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredBusinesses.map(business => (
